@@ -18,7 +18,7 @@
 - Easier to develop initially but harder to scale.
 - Deployment involves the entire system.
 
-![alt text](@/assets/image.png)
+![alt text](../assets/image.png)
 
 #### Microservices System
 - Composed of small, independent services.
