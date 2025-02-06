@@ -29,6 +29,8 @@
 - In case one services fail, the other services will not be down.
 - If any service experience high load, other services will not be affected, meanwhile, we can set different resources for each services based on usage.
 
+![alt text](assets/microservice_design.png)
+
 #### Differences
 - **Scalability**: Monolithic systems are harder to scale, while microservices can be scaled independently.
 - **Development**: Monolithic systems are easier to develop initially, whereas microservices require more effort.
