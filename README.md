@@ -12,19 +12,22 @@
 
 ### Sprint 1: Design Monolithic system and improved to Microservices - discuss their differences
 
-#### Monolithic System
+#### Monolithic System - Code base under /monolithic
 - A single unified codebase.
 - All components are interconnected and interdependent.
 - Easier to develop initially but harder to scale.
 - Deployment involves the entire system.
+- If one service have high load then other services will be impacted as well.
 
-![alt text](assets/image.png)
+![alt text](assets/monolithic_design.png)
 
-#### Microservices System
+#### Microservices System - Code base under /microservices
 - Composed of small, independent services.
 - Each service can be developed, deployed, and scaled independently.
-- More complex to develop initially but easier to scale.
+- More complex to develop initially but easier to scale and maintain.
 - Deployment involves individual services.
+- In case one services fail, the other services will not be down.
+- If any service experience high load, other services will not be affected, meanwhile, we can set different resources for each services based on usage.
 
 #### Differences
 - **Scalability**: Monolithic systems are harder to scale, while microservices can be scaled independently.
