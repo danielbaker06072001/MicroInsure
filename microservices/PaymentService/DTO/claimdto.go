@@ -1,5 +1,5 @@
 package DTO
 
-type PaymentDTO struct {
+type ClaimDTO struct {
 	ID string `json:"id"`
 }
