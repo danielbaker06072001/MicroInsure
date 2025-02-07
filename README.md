@@ -37,3 +37,13 @@
 - **Deployment**: Monolithic systems require full deployment, while microservices allow for independent deployment.
 - **Maintenance**: Microservices are easier to maintain due to their modular nature, while monolithic systems can become complex over time.
 
+##### Running Services at local: 
+
+| Services  | Port |
+| ------------- | ------------- |
+| Claim Service  | :8080  |
+| Payment Service  | :8081  |
+| Policy Service | :8082  |
+| Claim DB/Cache  | :5432 / :6379  |
+| Payment DB/Cache  | :5433 / :6380  |
+| Policy DB/Cache  | :5434 / :6381  |
