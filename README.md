@@ -84,3 +84,4 @@ Consider a scenario where
 - If the **Payment Service** is down, the request remains in the queue and is retried later.
 
 **Result**: Claim are **not blocked**, failures are **handled**, and the system **scales better**.
+![alt text](assets/message.png)
