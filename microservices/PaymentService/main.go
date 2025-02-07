@@ -39,12 +39,19 @@ func main() {
 	service := application.NewPaymentService(repo)
 	handler := interfaces.NewPaymentHandler(service)
 
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "healthy"})
+	})
+	
 	router.POST("/payments", handler.CreatePayment)
 	router.GET("/payments", handler.GetAllPayment)
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "WRONG API PATH"})
 	})
+
+	// * Register service in Consul
+	Config.RegisterServiceWithConsul(config)
 
 	if err := router.Run(":" + config.Server.GinPort); err != nil {
 		log.Fatal("FAILED TO START SERVER", err)

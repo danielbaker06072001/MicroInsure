@@ -1,8 +1,10 @@
 package interfaces
 
 import (
+	Config "ClaimService/AppConfig"
 	application "ClaimService/Application"
 	model "ClaimService/Model"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -59,6 +61,7 @@ func (h *ClaimHandler) CreateClaim(context *gin.Context) {
 
 
 func (h *ClaimHandler) GetAllClaim(context *gin.Context) {
+	fmt.Println(Config.DiscoverServiceWithConsul("payment-service-8081"))
 	claim , err := h.service.GetAllClaim()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"status": "error"})

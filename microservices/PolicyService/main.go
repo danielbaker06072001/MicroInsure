@@ -39,12 +39,19 @@ func main() {
 	service := application.NewPolicyService(repo)
 	handler := interfaces.NewPolicyHandler(service)
 
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "healthy"})
+	})
+	
 	router.POST("/policys", handler.CreatePolicy)
 	router.GET("/policys", handler.GetAllPolicy)
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "WRONG API PATH"})
 	})
+
+	// * Register service in Consul
+	Config.RegisterServiceWithConsul(config)
 
 	if err := router.Run(":" + config.Server.GinPort); err != nil {
 		log.Fatal("FAILED TO START SERVER", err)

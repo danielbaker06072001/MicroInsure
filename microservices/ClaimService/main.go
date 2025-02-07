@@ -14,12 +14,13 @@ import (
 
 func main() {
 	router := gin.Default()
-	
+
 	env := ".env"
 	if len(os.Args) > 1 {
 		env = os.Args[1]
 	}
 
+	// * Connect to database
 	Config.SetEnvironment(env)
 	config, err := Config.LoadConfig()
 	if err != nil {
@@ -30,14 +31,18 @@ func main() {
 	if err != nil {
 		log.Fatal("Error connecting to database")
 	}
-	db_redis, err  := Config.ConnectRedis(config)
+	db_redis, err := Config.ConnectRedis(config)
 	if err != nil {
 		log.Fatal("Error connecting to redis")
 	}
-	
+
 	repo := infrastructure.NewClaimRepository(db_data, db_redis)
 	service := application.NewClaimService(repo)
 	handler := interfaces.NewClaimHandler(service)
+
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "healthy"})
+	})
 
 	router.POST("/claims", handler.CreateClaim)
 	router.GET("/claims", handler.GetAllClaim)
@@ -46,6 +51,10 @@ func main() {
 		c.JSON(http.StatusNotFound, gin.H{"message": "WRONG API PATH"})
 	})
 
+	// * Register service in Consul
+	Config.RegisterServiceWithConsul(config)
+
+	// Start the Gin server
 	if err := router.Run(":" + config.Server.GinPort); err != nil {
 		log.Fatal("FAILED TO START SERVER", err)
 	}
