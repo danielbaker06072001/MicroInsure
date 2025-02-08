@@ -50,6 +50,91 @@
 | Payment DB/Cache  | :5433 / :6380  |
 | Policy DB/Cache  | :5434 / :6381  |
 
+#### Result after Register services to Consul
+http://localhost:8500/v1/agent/services
+```bash
+{
+  "claim-service-8080": {
+    "ID": "claim-service-8080",
+    "Service": "claim-service",
+    "Tags": [],
+    "Meta": {
+
+    },
+    "Port": 8080,
+    "Address": "127.0.0.1",
+    "TaggedAddresses": {
+      "lan_ipv4": {
+        "Address": "127.0.0.1",
+        "Port": 8080
+      },
+      "wan_ipv4": {
+        "Address": "127.0.0.1",
+        "Port": 8080
+      }
+    },
+    "Weights": {
+      "Passing": 1,
+      "Warning": 1
+    },
+    "EnableTagOverride": false,
+    "Datacenter": "dc1"
+  },
+  "payment-service-8081": {
+    "ID": "payment-service-8081",
+    "Service": "payment-service",
+    "Tags": [],
+    "Meta": {
+
+    },
+    "Port": 8081,
+    "Address": "127.0.0.1",
+    "TaggedAddresses": {
+      "lan_ipv4": {
+        "Address": "127.0.0.1",
+        "Port": 8081
+      },
+      "wan_ipv4": {
+        "Address": "127.0.0.1",
+        "Port": 8081
+      }
+    },
+    "Weights": {
+      "Passing": 1,
+      "Warning": 1
+    },
+    "EnableTagOverride": false,
+    "Datacenter": "dc1"
+  },
+  "policy-service-8082": {
+    "ID": "policy-service-8082",
+    "Service": "claim-service",
+    "Tags": [],
+    "Meta": {
+
+    },
+    "Port": 8082,
+    "Address": "127.0.0.1",
+    "TaggedAddresses": {
+      "lan_ipv4": {
+        "Address": "127.0.0.1",
+        "Port": 8082
+      },
+      "wan_ipv4": {
+        "Address": "127.0.0.1",
+        "Port": 8082
+      }
+    },
+    "Weights": {
+      "Passing": 1,
+      "Warning": 1
+    },
+    "EnableTagOverride": false,
+    "Datacenter": "dc1"
+  }
+}
+```
+
 #### Result after adding API Gateway 
 | **Service Name**  | **API Gateway Path (Kong)** | **Backend Service Path** |
 |-------------------|----------------------------|--------------------------|
@@ -94,3 +179,13 @@ Consider a scenario where
 
 **After Setup Message Broker** 
 ![alt text](assets/message_result.png)
+
+### **Conclusion**  
+
+The transition from a **monolithic** to a **microservices** architecture in MicroInsure highlights the benefits of **scalability, fault tolerance, and modularity**. While microservices improve **independent service management and resilience**, they introduce operational complexities such as **service discovery, load balancing, and inter-service communication**.  
+
+Currently, **API Gateway** , **message brokers (Kafka/RabbitMQ)** and **Service Registry** play a crucial role in **handling service requests and asynchronous communication**, ensuring better decoupling and scalability. However, managing multiple services without a robust **orchestration system** increases deployment and operational challenges.  
+
+For future iterations, the **preferred technology** would be **Kubernetes (K8s)**, which provides **native service discovery, automated load balancing, rolling updates, and self-healing capabilities**. While Kubernetes does not replace a **message broker**, it enhances **service orchestration and scaling**, making it easier to manage and deploy a distributed microservices system efficiently.  
+
+By integrating Kubernetes with **existing messaging solutions like Kafka or RabbitMQ**, MicroInsure can achieve a **highly scalable, resilient, and efficient system**, ensuring **smooth inter-service communication, optimized resource utilization, and easier infrastructure management**. This approach future-proofs the system while maintaining the flexibility and performance required for large-scale insurance operations.
