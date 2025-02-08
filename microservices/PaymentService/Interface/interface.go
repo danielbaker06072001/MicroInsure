@@ -3,6 +3,7 @@ package interfaces
 import (
 	application "PaymentService/Application"
 	model "PaymentService/Model"
+	"log"
 	"net/http"
 	"time"
 
@@ -65,4 +66,8 @@ func (h *PaymentHandler) GetAllPayment(context *gin.Context) {
 		return
 	}
 	context.JSON(http.StatusOK, gin.H{"status": "success", "Payment" : Payment})
+}
+
+func (h *PaymentHandler) ProcessPayment(message string) {
+	log.Printf("Processed Payment with ID: %s", message)
 }

@@ -5,6 +5,7 @@ import (
 	application "PaymentService/Application"
 	infrastructure "PaymentService/Infrastructure"
 	interfaces "PaymentService/Interface"
+	utils "PaymentService/Utils"
 	"log"
 	"net/http"
 	"os"
@@ -34,8 +35,12 @@ func main() {
 	if err != nil {
 		log.Fatal("Error connecting to redis")
 	}
+	db_mq, err := Config.ConnectRabbitMQ(config)
+	if err != nil {
+		log.Fatal("Error connecting to message broker")
+	}
 	
-	repo := infrastructure.NewPaymentRepository(db_data, db_redis)
+	repo := infrastructure.NewPaymentRepository(db_data, db_redis, db_mq)
 	service := application.NewPaymentService(repo)
 	handler := interfaces.NewPaymentHandler(service)
 
@@ -45,6 +50,12 @@ func main() {
 	
 	router.POST("/payments", handler.CreatePayment)
 	router.GET("/payments", handler.GetAllPayment)
+
+	// * Listen to queue from Claims to process payment 
+	err = utils.ListenToQueue(db_mq, "claim_validation", handler.ProcessPayment)
+	if err != nil {
+		log.Fatal("Error receiving message from queue")
+	}
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "WRONG API PATH"})

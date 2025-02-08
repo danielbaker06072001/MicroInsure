@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/joho/godotenv"
+	"github.com/streadway/amqp"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -25,6 +26,13 @@ type Appconfig struct {
 		Addr     string `env:"REDIS_ADDR"`
 		Password string `env:"REDIS_PASSWORD"`
 		DB   	 int 	`env:"REDIS_DB"`
+	}
+
+	MessageBroker struct { 
+		Addr     string `env:"MESSAGE_BROKER_ADDR"`
+		User     string `env:"MESSAGE_BROKER_USER"`
+		Password string `env:"MESSAGE_BROKER_PASSWORD"`
+		// Queue    string `env:"MESSAGE_BROKER_QUEUE"`
 	}
 }
 
@@ -69,6 +77,18 @@ func LoadConfig() (*Appconfig, error) {
 			Password: os.Getenv("REDIS_PASSWORD"),
 			DB: 0,
 		},
+
+		MessageBroker : struct {
+			Addr     string `env:"MESSAGE_BROKER_ADDR"`
+			User     string `env:"MESSAGE_BROKER_USER"`
+			Password string `env:"MESSAGE_BROKER_PASSWORD"`
+			// Queue    string `env:"MESSAGE_BROKER_QUEUE"`
+		} {
+			Addr: os.Getenv("MESSAGE_BROKER_ADDR"),
+			User: os.Getenv("MESSAGE_BROKER_USER"),
+			Password: os.Getenv("MESSAGE_BROKER_PASSWORD"),
+			// Queue: os.Getenv("MESSAGE_BROKER_QUEUE"),
+		},
 	}
 
 	return &config, nil
@@ -99,4 +119,24 @@ func ConnectRedis(cfg *Appconfig) (*redis.Client, error) {
 	}
 	log.Println("Connected to redis")
 	return client, nil
+}
+
+func ConnectRabbitMQ(cfg *Appconfig) (*amqp.Connection, error) {
+	rabbitMQURL := fmt.Sprintf("amqp://%s:%s@%s/",
+		cfg.MessageBroker.User,
+		cfg.MessageBroker.Password,
+		cfg.MessageBroker.Addr,
+	)
+
+	conn, err := amqp.Dial(rabbitMQURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to RabbitMQ: %v", err)
+	}
+	log.Println("Connected to RabbitMQ")
+	return conn, nil
+}
+
+func CloseRabbitMQ(conn *amqp.Connection) {
+	conn.Close()
+	log.Println("Closed RabbitMQ connection")
 }

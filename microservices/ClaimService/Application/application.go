@@ -30,3 +30,11 @@ func (s *ClaimService) GetAllClaim() ([]*model.Claim, error) {
 	}
 	return listClaim, nil
 }
+
+func (s *ClaimService) ValidateClaim(mesage string ) (bool, error) {
+	valid, err := s.repo.ValidateClaim(mesage)
+	if err != nil {
+		return false, err
+	}
+	return valid, nil
+}

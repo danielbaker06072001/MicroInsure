@@ -51,6 +51,12 @@
 | Policy DB/Cache  | :5434 / :6381  |
 
 #### Result after adding API Gateway 
+| **Service Name**  | **API Gateway Path (Kong)** | **Backend Service Path** |
+|-------------------|----------------------------|--------------------------|
+| Claim Service    | `http://localhost:8000/claims` | `http://localhost:8080` |
+| Payment Service  | `http://localhost:8000/payments` | `http://localhost:8081` |
+| Policy Service   | `http://localhost:8000/policies` | `http://localhost:8082` |
+
 ![alt text](assets/api_gateway.png)
 
 - How the service registry work between multiple services
@@ -85,3 +91,6 @@ Consider a scenario where
 
 **Result**: Claim are **not blocked**, failures are **handled**, and the system **scales better**.
 ![alt text](assets/message.png)
+
+**After Setup Message Broker** 
+![alt text](assets/message_result.png)

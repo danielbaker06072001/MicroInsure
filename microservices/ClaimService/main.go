@@ -35,8 +35,12 @@ func main() {
 	if err != nil {
 		log.Fatal("Error connecting to redis")
 	}
+	db_mq, err := Config.ConnectRabbitMQ(config)
+	if err != nil {
+		log.Fatal("Error connecting to message broker")
+	}
 
-	repo := infrastructure.NewClaimRepository(db_data, db_redis)
+	repo := infrastructure.NewClaimRepository(db_data, db_redis, db_mq)
 	service := application.NewClaimService(repo)
 	handler := interfaces.NewClaimHandler(service)
 
@@ -46,6 +50,7 @@ func main() {
 
 	router.POST("/claims", handler.CreateClaim)
 	router.GET("/claims", handler.GetAllClaim)
+	router.POST("/claims/validate", handler.ValidateClaim)
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "WRONG API PATH"})

@@ -5,6 +5,7 @@ import (
 	application "ClaimService/Application"
 	model "ClaimService/Model"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -68,4 +69,19 @@ func (h *ClaimHandler) GetAllClaim(context *gin.Context) {
 		return
 	}
 	context.JSON(http.StatusOK, gin.H{"status": "success", "claim" : claim})
+}
+
+func (h *ClaimHandler) ValidateClaim(context *gin.Context) {
+	bodyBytes, err := ioutil.ReadAll(context.Request.Body)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Failed to read request body"})
+		return
+	}
+	bodyString := string(bodyBytes)
+	claim, err := h.service.ValidateClaim(bodyString)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"status": "error"})
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{"status": "success", "claim": claim})
 }
